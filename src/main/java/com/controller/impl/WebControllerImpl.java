@@ -22,7 +22,7 @@ public class WebControllerImpl implements WebController {
 
     @Override
     public String convertToMongoQuery(@ModelAttribute(value = "query") Query sqlQuery) {
-        converter.splitSqlQuery(sqlQuery.getSqlQuery().toLowerCase());
+        converter.setSqlQuery(sqlQuery.getSqlQuery().toLowerCase());
         return null;
     }
 }

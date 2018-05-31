@@ -1,11 +1,17 @@
 package com.mongodb;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.util.JSON;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class MongodbHandler {
@@ -27,4 +33,28 @@ public class MongodbHandler {
         mongoClient = new MongoClient(host, port);
     }
 
+    public boolean insertDocument(String dataBaseName, String collectionName, String input) {
+        try {
+            MongoDatabase db = mongoClient.getDatabase(dataBaseName);
+            MongoCollection<Document> collection = db.getCollection(collectionName);
+            final Document dbObjectInput = Document.parse(input);
+            collection.insertOne(dbObjectInput);
+            return true;
+        } catch (MongoWriteException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return false;
+    }
+
+    public List<String> find(String dataBaseName, String collectionName, String condition) {
+        List<String> result = new ArrayList<>();
+        try {
+            MongoDatabase db = mongoClient.getDatabase(dataBaseName);
+            MongoCollection<Document> collection = db.getCollection(collectionName);
+            collection.find(BasicDBObject.parse(condition)).forEach((Block<Document>) document -> result.add(JSON.serialize(document)));
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return result;
+    }
 }
