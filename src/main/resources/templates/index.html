@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Query</title>
+</head>
+<body>
+<form th:action="@{/convert}" th:object="${query}" method="POST">
+    Query:
+    <input  type="text" th:field="*{sqlQuery}"/>
+    <br/>
+    <input type="submit" value="Convert and Select"/>
+    <br/>
+    Query to mongo:
+    <input  type="text"/>
+    <br/>
+    Result:
+    <input  type="text"/>
+    <br/>
+</form>
+<br/>
+</body>
+</html>
