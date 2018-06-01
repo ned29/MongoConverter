@@ -2,7 +2,7 @@ package com.controller;
 
 import com.converter.ConvertToMongoQuery;
 import com.model.Query;
-import com.mongodb.MongoDBHandler;
+import com.mongoHandler.MongoDBHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
