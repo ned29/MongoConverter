@@ -13,7 +13,7 @@ public interface MongoDBHandler {
      * @param dataBaseName
      * @param collectionName
      * @param input
-     * @return
+     * @return boolean value with result of inserting
      */
     boolean insertDocument(String dataBaseName, String collectionName, String input);
 
@@ -23,7 +23,7 @@ public interface MongoDBHandler {
      * @param dataBaseName
      * @param collectionName
      * @param condition
-     * @return
+     * @return list of results
      */
     List<String> find(String dataBaseName, String collectionName, String condition);
 }

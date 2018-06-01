@@ -7,38 +7,22 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.stereotype.Component;
 
+@Getter
+@Setter
 @Component
 @ToString
 @EqualsAndHashCode
-public class Select {
-    @Getter
-    @Setter
+public class Sql {
     private String select;
 
-    @Getter
-    @Setter
     private String from;
 
-    @Getter
     private String where;
 
-    @Getter
     @JsonProperty("order by")
     private String orderBy;
 
-    @Getter
-    @Setter
     private String skip;
 
-    @Getter
-    @Setter
     private String limit;
-
-    public void setWhere(String where) {
-        this.where = where;
-    }
-
-    public void setOrderBy(String orderBy) {
-        this.orderBy = orderBy.replaceAll("asc", ":1").replaceAll("desc", ":-1");
-    }
 }

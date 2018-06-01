@@ -25,13 +25,12 @@ public class WebControllerImpl implements WebController {
 
     @Override
     public String convertToMongoQuery(@ModelAttribute(value = "query") Query sqlQuery) {
-        converter.processingValues(sqlQuery.getSqlQuery().toLowerCase());
+        converter.processingSql(sqlQuery.getSqlQuery().toLowerCase());
         return "index";
     }
 
     @Override
     public String showAddCollections(Model model) {
-        model.addAttribute("collections", new Query());
         return "add-collections";
     }
 

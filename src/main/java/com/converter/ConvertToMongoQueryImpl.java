@@ -1,63 +1,44 @@
 package com.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.model.Select;
+import com.model.Sql;
 import com.parser.SqlParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
-    private Select select;
+    private Sql sql;
 
     @Autowired
     private SqlParser sqlParser;
 
     @Override
-    public String processingValues(String query) {
-        select = new ObjectMapper().convertValue(sqlParser.invokeParser(query), Select.class);
-        return "db." + select.getFrom() + ".find(" + processWhere() + processSelect() + ")" + processOrderBy() + processLimit() + processSkip();
+    public String processingSql(String query) {
+        sql = new ObjectMapper().convertValue(sqlParser.parseSql(query), Sql.class);
+        return "db." + sql.getFrom() + ".find(" + processWhere() + processSelect() + ")" + processOrderBy() + processLimit() + processSkip();
     }
 
-    /**
-     * Convert skip sql to skip mongo
-     *
-     * @return
-     */
     private String processSkip() {
-        return select.getSkip() != null ? ".skip(" + select.getSkip() + ")" : "";
+        return sql.getSkip() != null ? ".skip(" + sql.getSkip() + ")" : "";
     }
 
-    /**
-     * Convert limit sql to limit mongo
-     *
-     * @return
-     */
     private String processLimit() {
-        return select.getLimit() != null ? ".limit(" + select.getLimit() + ")" : "";
+        return sql.getLimit() != null ? ".limit(" + sql.getLimit() + ")" : "";
     }
 
-    /**
-     * Convert skip order by sort mongo
-     *
-     * @return
-     */
     private String processOrderBy() {
-        return select.getOrderBy() != null ? ".sort({" + select.getOrderBy() + "})" : "";
+        String orderBy = sql.getOrderBy().replaceAll("asc", ":1").replaceAll("desc", ":-1");
+        return orderBy != null ? ".sort({" + orderBy + "})" : "";
     }
 
-    /**
-     * Convert select sql to select mongo
-     *
-     * @return
-     */
     private String processSelect() {
-        if (select.getSelect().equals("*")) {
+        if (sql.getSelect().equals("*")) {
             return "{}";
         } else {
             StringBuilder result = new StringBuilder();
             boolean id = false;
-            String[] selectedFields = select.getSelect().split(",");
+            String[] selectedFields = sql.getSelect().split(",");
             for (int i = 0; i < selectedFields.length; i++) {
                 if (selectedFields[i].equals("id")) {
                     id = true;
@@ -70,21 +51,10 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
         }
     }
 
-    /**
-     * Convert where sql to where mongo
-     *
-     * @return
-     */
     private String processWhere() {
         return "";
     }
 
-    /**
-     * RegExp for where(sql query)
-     *
-     * @param replace
-     * @return
-     */
     private String replacementForWhere(String replace) {
         return replace != null ? replace.replaceAll(">", "\\$gt").replaceAll("<", "\\$lt").replaceAll("<=", "\\$lte").
                 replaceAll(">=", "\\$gte").replaceAll("<>", "\\$ne").replaceAll("!=", "\\$ne").

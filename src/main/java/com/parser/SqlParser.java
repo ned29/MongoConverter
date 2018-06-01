@@ -6,5 +6,11 @@ import java.util.Map;
 
 @Component
 public interface SqlParser {
-    Map<String, String> invokeParser(String query);
+
+    /**
+     * Parsing sql query into map
+     * @param sqlQuery sql query
+     * @return values for selectors
+     */
+    Map<String, String> parseSql(String sqlQuery);
 }
