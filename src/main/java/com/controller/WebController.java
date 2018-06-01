@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface WebController {
 
     /**
-     *Show page
+     * Show page for results
+     *
      * @param model
      * @return
      */
@@ -19,10 +20,29 @@ public interface WebController {
     String showIndex(Model model);
 
     /**
+     * Show page for collections
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    String showAddCollections(Model model);
+
+    /**
      * Post sql for converting in mongo query
+     *
      * @param sqlQuery
      * @return
      */
     @RequestMapping(value = "/convert", method = RequestMethod.POST)
     String convertToMongoQuery(@ModelAttribute("sqlQuery") Query sqlQuery);
+
+    /**
+     * Post collections to mongo db
+     *
+     * @param sqlQuery
+     * @return
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    String insertCollections(@ModelAttribute("collections") Query sqlQuery);
 }

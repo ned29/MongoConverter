@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Query</title>
+    <title>Add collections</title>
 </head>
 <body>
-<form th:action="@{/convert}" th:object="${query}" method="POST">
+<form th:action="@{/add}" th:object="${collections}" method="POST">
     Query:
-    <input  type="text" th:field="*{sqlQuery}"/>
+    <input type="text" th:field="*{collection}"/>
     <br/>
     <input type="submit" value="Convert and Select"/>
-    <br/>
-    Result:
-    <select multiple></select>
     <br/>
 </form>
 <br/>

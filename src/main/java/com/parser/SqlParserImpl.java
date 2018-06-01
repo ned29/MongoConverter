@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class SqlParserImpl implements SqlParser {
+
     private static final String PATTERN_START = "(?<=";
     private static final String PATTERN_BETWEEN = ")(.*\\n?)(?=";
     private static final String PATTERN_FINISH = ")";
@@ -31,15 +32,6 @@ public class SqlParserImpl implements SqlParser {
     @Getter
     @Setter
     private String sqlQuery;
-
-    //    public void setSqlQuery(String sqlQuery) {
-//        this.sqlQuery = sqlQuery.replaceAll(">", "\\$gt").replaceAll("<", "\\$lt").replaceAll("<=", "\\$lte").
-//                replaceAll(">=", "\\$gte").replaceAll("<>", "\\$ne").replaceAll("!=", "\\$ne").
-//                replaceAll("=", ":").replaceAll("]", "};").replaceAll("\\[", "{").
-//                replace(FROM, FROM + ":").replace(WHERE, WHERE + ":").replace(ORDER_BY, "sort:").
-//                replace(SKIP, SKIP + ":").replace(LIMIT, LIMIT + ":");
-//    }
-//
 
     /**
      * Finding value between words

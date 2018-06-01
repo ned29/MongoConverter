@@ -21,6 +21,7 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
 
     /**
      * Convert skip sql to skip mongo
+     *
      * @return
      */
     private String processSkip() {
@@ -29,6 +30,7 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
 
     /**
      * Convert limit sql to limit mongo
+     *
      * @return
      */
     private String processLimit() {
@@ -37,6 +39,7 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
 
     /**
      * Convert skip order by sort mongo
+     *
      * @return
      */
     private String processOrderBy() {
@@ -45,6 +48,7 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
 
     /**
      * Convert select sql to select mongo
+     *
      * @return
      */
     private String processSelect() {
@@ -68,6 +72,7 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
 
     /**
      * Convert where sql to where mongo
+     *
      * @return
      */
     private String processWhere() {
@@ -76,6 +81,7 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
 
     /**
      * RegExp for where(sql query)
+     *
      * @param replace
      * @return
      */
