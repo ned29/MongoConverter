@@ -10,9 +10,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public interface WebController {
 
+    /**
+     *Show page
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String showIndex(Model model);
 
+    /**
+     * Post sql for converting in mongo query
+     * @param sqlQuery
+     * @return
+     */
     @RequestMapping(value = "/convert", method = RequestMethod.POST)
     String convertToMongoQuery(@ModelAttribute("sqlQuery") Query sqlQuery);
 }

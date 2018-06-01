@@ -1,7 +1,7 @@
 package com.controller.impl;
 
 import com.controller.WebController;
-import com.parser.SqlParser;
+import com.converter.ConvertToMongoQuery;
 import com.model.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class WebControllerImpl implements WebController {
 
     @Autowired
-    private SqlParser converter;
+    private ConvertToMongoQuery converter;
 
     @Override
     public String showIndex(Model model) {
@@ -22,8 +22,7 @@ public class WebControllerImpl implements WebController {
 
     @Override
     public String convertToMongoQuery(@ModelAttribute(value = "query") Query sqlQuery) {
-        converter.setSqlQuery(sqlQuery.getSqlQuery().toLowerCase());
-        converter.invokeParser();
-        return null;
+        converter.processingValues(sqlQuery.getSqlQuery().toLowerCase());
+        return "index";
     }
 }

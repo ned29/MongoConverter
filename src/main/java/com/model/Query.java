@@ -3,6 +3,9 @@ package com.model;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * POJO for thymeleaf
+ */
 @Getter
 @Setter
 public class Query {
