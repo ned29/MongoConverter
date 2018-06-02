@@ -41,11 +41,12 @@ public class MongoDBHandlerImpl implements MongoDBHandler {
     @Override
     public boolean insertDocument(String collectionName, String input) {
         try {
-            MongoDatabase db = mongoClient.getDatabase(dataBaseName);
-            MongoCollection<Document> collection = db.getCollection(collectionName);
-            final Document dbObjectInput = Document.parse(input);
-            collection.insertOne(dbObjectInput);
-            return true;
+            MongoCollection<Document> collection = getMongoCollection(collectionName);
+            if (collection != null) {
+                final Document dbObjectInput = Document.parse(input);
+                collection.insertOne(dbObjectInput);
+                return true;
+            }
         } catch (MongoWriteException e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -56,12 +57,24 @@ public class MongoDBHandlerImpl implements MongoDBHandler {
     public List<String> find(String collectionName, String condition) {
         List<String> result = new ArrayList<>();
         try {
-            MongoDatabase db = mongoClient.getDatabase(dataBaseName);
-            MongoCollection<Document> collection = db.getCollection(collectionName);
-            collection.find(BasicDBObject.parse(condition)).forEach((Block<Document>) document -> result.add(JSON.serialize(document)));
+            MongoCollection<Document> collection = getMongoCollection(collectionName);
+            if (collection != null) {
+                collection.find(BasicDBObject.parse(condition)).forEach((Block<Document>) document -> result.add(JSON.serialize(document)));
+            }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
         return result;
+    }
+
+    private MongoCollection<Document> getMongoCollection(String collectionName) {
+        if (mongoClient == null)
+            return null;
+        MongoDatabase db = mongoClient.getDatabase(dataBaseName);
+        List<String> collectionList = db.listCollectionNames().into(new ArrayList<>());
+        if (!collectionList.contains(collectionName)) {
+            db.createCollection(collectionName);
+        }
+        return db.getCollection(collectionName);
     }
 }

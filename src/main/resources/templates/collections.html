@@ -10,12 +10,20 @@
     <br/>
     Add collections:
     <br/>
-    <input type="text" style="width:300px; height:300px;" th:field="*{collection}"/>
+    <textarea id="jsonArea" cols=50 rows=10 th:field="*{collection}"></textarea>
     <br/>
     <input type="submit" value="Submit"/>
     <br/>
+    <a th:text="${result}"></a>
+    <br/>
     <a href="/">To select</a>
+    <br/>
 </form>
 <br/>
 </body>
+<script>
+var pretty = JSON.stringify(obj, undefined, 2);
+var ugly = document.getElementById('jsonArea').value;
+document.getElementById('jsonArea').value = pretty;
+</script>
 </html>

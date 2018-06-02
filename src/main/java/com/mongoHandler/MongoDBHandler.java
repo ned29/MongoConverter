@@ -8,20 +8,22 @@ import java.util.List;
 public interface MongoDBHandler {
 
     /**
-     * Insert collections to mongodb
+     * This method used for the insert the document into collection
      *
      * @param collectionName
      * @param input
-     * @return boolean value with result of inserting
+     *            json String
+     * @return
      */
     boolean insertDocument(String collectionName, String input);
 
     /**
-     * Find collections in mongodb
+     * This method is used for the retrieve the documents based on the condition
      *
      * @param collectionName
      * @param condition
-     * @return list of results
+     *            string json
+     * @return
      */
     List<String> find(String collectionName, String condition);
 }

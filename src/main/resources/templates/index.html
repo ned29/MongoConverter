@@ -12,10 +12,15 @@
     <br/>
     Result:
     <br/>
-    <input type="text" readonly style="width:300px; height:300px;"/>
+    <textarea id="jsonArea" cols=50 rows=10 th:text="${results}"></textarea>
     <br/>
     <a href="/add">To add collections</a>
 </form>
 <br/>
 </body>
+<script>
+var pretty = JSON.stringify(obj, undefined, 2);
+var ugly = document.getElementById('jsonArea').value;
+document.getElementById('jsonArea').value = pretty;
+</script>
 </html>
