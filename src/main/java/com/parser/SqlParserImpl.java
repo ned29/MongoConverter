@@ -19,10 +19,7 @@ import static com.parser.SqlNames.*;
  */
 @Component
 public class SqlParserImpl implements SqlParser {
-    private static final String PATTERN_START = "(?<=";
-    private static final String PATTERN_BETWEEN = ")(.*\\n?)(?=";
-    private static final String PATTERN_FINISH = ")";
-    private static final String BRACKET = "]";
+    private static final String REGEXP_FOR_VALUES_IN__BRACKETS = "\\[([^]]+)\\]";
 
     @Getter
     @Setter
@@ -30,19 +27,9 @@ public class SqlParserImpl implements SqlParser {
 
     @Override
     public Map<String, String> parseSql(String sqlQuery) {
-        this.sqlQuery = sqlQuery;
-        List<String> words = Arrays.asList(SELECT.name(), FROM.name(), WHERE.name(), ORDER_BY.name(), SKIP.name(), LIMIT.name());
+        this.sqlQuery = sqlQuery.replaceAll("\\[asc\\]", ":1").replaceAll("\\[desc\\]", ":-1");
+        List<String> words = Arrays.asList(SELECT.getValue(), FROM.getValue(), WHERE.getValue(), ORDER_BY.getValue(), SKIP.getValue(), LIMIT.getValue());
         return findValues(words.stream().filter(this::regExpForWords).collect(Collectors.toList()));
-    }
-
-    private String regExp(String startWord, String finishWord) {
-        Pattern pattern = Pattern.compile(PATTERN_START + startWord + PATTERN_BETWEEN + finishWord + PATTERN_FINISH);
-        Matcher matcher = pattern.matcher(sqlQuery);
-        return matcher.find() ? trim(matcher.group()) : null;
-    }
-
-    private String trim(String query) {
-        return query.replaceAll("\\[", "").replaceAll("\\]", "").trim();
     }
 
     private boolean regExpForWords(String word) {
@@ -52,13 +39,15 @@ public class SqlParserImpl implements SqlParser {
     }
 
     private Map<String, String> findValues(List<String> words) {
+        int count = 0;
         Map<String, String> keyValue = new HashMap<>();
-        for (int i = 0; i < words.size(); i++) {
-            if (i == words.size() - 1) {
-                keyValue.put(words.get(i), regExp(words.get(i), BRACKET));
-            } else {
-                keyValue.put(words.get(i), regExp(words.get(i), words.get(i + 1)));
-            }
+        Pattern pattern = Pattern.compile(REGEXP_FOR_VALUES_IN__BRACKETS);
+        Matcher matcher = pattern.matcher(sqlQuery);
+        while (matcher.find()) {
+            String value = matcher.group().replaceAll(words.get(count), "").
+                    replaceAll("\\[", "").replaceAll("\\]", "").trim();
+            keyValue.put(words.get(count), value);
+            count++;
         }
         return keyValue;
     }

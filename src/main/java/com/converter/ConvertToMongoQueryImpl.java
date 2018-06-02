@@ -28,8 +28,7 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
     }
 
     private String processOrderBy() {
-        String orderBy = sql.getOrderBy().replaceAll("asc", ":1").replaceAll("desc", ":-1");
-        return orderBy != null ? ".sort({" + orderBy + "})" : "";
+        return sql.getOrderBy() != null ? ".sort({" + sql.getOrderBy() + "})" : "";
     }
 
     private String processSelect() {
