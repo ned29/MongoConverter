@@ -6,13 +6,15 @@
 <body>
 <form th:action="@{/convert}" th:object="${query}" method="POST">
     Query:
-    <input  type="text" th:field="*{sqlQuery}"/>
+    <input type="text" th:field="*{sqlQuery}"/>
     <br/>
-    <input type="submit" value="Convert and Select"/>
+    <input type="submit" value="Select"/>
     <br/>
     Result:
-    <select ></select>
     <br/>
+    <input type="text" readonly style="width:300px; height:300px;"/>
+    <br/>
+    <a href="/add">To add collections</a>
 </form>
 <br/>
 </body>

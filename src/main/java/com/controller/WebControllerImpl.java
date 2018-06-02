@@ -31,11 +31,13 @@ public class WebControllerImpl implements WebController {
 
     @Override
     public String showAddCollections(Model model) {
-        return "add-collections";
+        model.addAttribute("collections", new Query());
+        return "collections";
     }
 
     @Override
-    public String insertCollections(@ModelAttribute(value = "collections") Query sqlQuery) {
-        return "add-collections";
+    public String insertCollections(@ModelAttribute(value = "collections") Query collection) {
+        handler.insertDocument(collection.getCollectionName(),collection.getCollection());
+        return "collections";
     }
 }

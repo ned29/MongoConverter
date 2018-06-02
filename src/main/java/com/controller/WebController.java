@@ -35,14 +35,14 @@ public interface WebController {
      * @return
      */
     @RequestMapping(value = "/convert", method = RequestMethod.POST)
-    String convertToMongoQuery(@ModelAttribute("sqlQuery") Query sqlQuery);
+    String convertToMongoQuery(@ModelAttribute("query") Query sqlQuery);
 
     /**
      * Post collections to mongo db
      *
-     * @param sqlQuery
+     * @param collection
      * @return
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    String insertCollections(@ModelAttribute("collections") Query sqlQuery);
+    String insertCollections(@ModelAttribute("collections") Query collection);
 }

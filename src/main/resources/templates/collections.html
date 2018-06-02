@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add collections</title>
+</head>
+<body>
+<form th:action="@{/add}" th:object="${collections}" method="POST">
+    Collection name:
+    <input type="text" th:field="*{collectionName}"/>
+    <br/>
+    Add collections:
+    <br/>
+    <input type="text" style="width:300px; height:300px;" th:field="*{collection}"/>
+    <br/>
+    <input type="submit" value="Submit"/>
+    <br/>
+    <a href="/">To select</a>
+</form>
+<br/>
+</body>
+</html>

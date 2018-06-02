@@ -10,20 +10,18 @@ public interface MongoDBHandler {
     /**
      * Insert collections to mongodb
      *
-     * @param dataBaseName
      * @param collectionName
      * @param input
      * @return boolean value with result of inserting
      */
-    boolean insertDocument(String dataBaseName, String collectionName, String input);
+    boolean insertDocument(String collectionName, String input);
 
     /**
      * Find collections in mongodb
      *
-     * @param dataBaseName
      * @param collectionName
      * @param condition
      * @return list of results
      */
-    List<String> find(String dataBaseName, String collectionName, String condition);
+    List<String> find(String collectionName, String condition);
 }

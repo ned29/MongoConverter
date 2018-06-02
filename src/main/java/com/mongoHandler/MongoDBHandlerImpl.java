@@ -39,7 +39,7 @@ public class MongoDBHandlerImpl implements MongoDBHandler {
     }
 
     @Override
-    public boolean insertDocument(String dataBaseName, String collectionName, String input) {
+    public boolean insertDocument(String collectionName, String input) {
         try {
             MongoDatabase db = mongoClient.getDatabase(dataBaseName);
             MongoCollection<Document> collection = db.getCollection(collectionName);
@@ -53,7 +53,7 @@ public class MongoDBHandlerImpl implements MongoDBHandler {
     }
 
     @Override
-    public List<String> find(String dataBaseName, String collectionName, String condition) {
+    public List<String> find(String collectionName, String condition) {
         List<String> result = new ArrayList<>();
         try {
             MongoDatabase db = mongoClient.getDatabase(dataBaseName);

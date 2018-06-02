@@ -10,4 +10,6 @@ import lombok.Setter;
 @Setter
 public class Query {
     private String sqlQuery;
+    private String collection;
+    private String collectionName;
 }
