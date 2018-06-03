@@ -2,61 +2,96 @@ package com.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.Sql;
+import com.mongoHandler.MongoDBHandler;
+import com.mongodb.BasicDBObject;
 import com.parser.SqlParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
+
 @Component
 public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
+    private static final String AND = "and";
+    private static final String OR = "or";
     private Sql sql;
 
     @Autowired
     private SqlParser sqlParser;
 
+    @Autowired
+    private MongoDBHandler mongoDBHandler;
+
     @Override
     public String processingSql(String query) {
         sql = new ObjectMapper().convertValue(sqlParser.parseSql(query), Sql.class);
-        return "db." + sql.getFrom() + ".find(" + processWhere() + processSelect() + ")" + processOrderBy() + processLimit() + processSkip();
+        return mongoDBHandler.find(sql.getFrom(), processWhere(), processSelect(), processOrderBy(), processLimit(), processSkip());
     }
 
-    private String processSkip() {
-        return sql.getSkip() != null ? ".skip(" + sql.getSkip() + ")" : "";
+    private int processSkip() {
+        return sql.getSkip() != null ? Integer.valueOf(sql.getSkip()) : 0;
     }
 
-    private String processLimit() {
-        return sql.getLimit() != null ? ".limit(" + sql.getLimit() + ")" : "";
+    private int processLimit() {
+        return sql.getLimit() != null ? Integer.valueOf(sql.getLimit()) : 0;
     }
 
     private String processOrderBy() {
-        return sql.getOrderBy() != null ? ".sort({" + sql.getOrderBy() + "})" : "";
+        if (sql.getOrderBy() != null) {
+            String[] sort = sql.getOrderBy().split(",");
+            IntStream.range(0, sort.length).forEach(i -> sort[i] = "'" + sort[i]);
+            return "{" + String.join(",", sort) + "}";
+        }
+        return null;
     }
 
-    private String processSelect() {
-        if (sql.getSelect().equals("*")) {
-            return "{}";
+    private BasicDBObject processSelect() {
+        BasicDBObject result = new BasicDBObject();
+        if (sql.getSelect().equals("*") && sql.getSelect() == null) {
+            return new BasicDBObject();
         } else {
-            StringBuilder result = new StringBuilder();
-            boolean id = false;
+            result.put("_id", 0);
             String[] selectedFields = sql.getSelect().split(",");
-            for (int i = 0; i < selectedFields.length; i++) {
-                if (selectedFields[i].equals("id")) {
-                    id = true;
+            for (String selectedField : selectedFields) {
+                if (selectedField.equals("id")) {
+                    result.remove("_id");
+                    continue;
                 }
-                selectedFields[i] = selectedFields[i] + ":1,";
-                result.append(selectedFields[i]);
+                result.put(selectedField, "1");
             }
-            result.setLength(result.length() - 1);
-            return id ? "{" + result + "}" : "{" + result + ",_id:0}";
+            return result;
         }
     }
 
     private String processWhere() {
+        String logicalOperator = "";
+        if (sql.getWhere() != null) {
+            List<String> logicalOperators = Arrays.asList(AND, OR);
+            for (String operator : logicalOperators) {
+                if (sqlParser.regExpForWords(operator)) {
+                    logicalOperator = operator;
+                }
+            }
+            if (!logicalOperator.equals("")) {
+                String[] where = sql.getWhere().split(logicalOperator);
+                IntStream.range(0, where.length).forEach(i -> where[i] = "{'" + replacementForWhere(where[i]) + "}}");
+                String result = String.join(",", where);
+                if (logicalOperator.equals(AND)) {
+                    return "{$and:[" + result + "]}";
+                } else {
+                    return "{$or:[" + result + "]}";
+                }
+            } else {
+                return "{" + replacementForWhere(sql.getWhere()) + "}";
+            }
+        }
         return "";
     }
 
     private String replacementForWhere(String replace) {
-        return replace != null ? replace.replaceAll(">", "\\$gt").replaceAll("<", "\\$lt").replaceAll("<=", "\\$lte").
-                replaceAll(">=", "\\$gte").replaceAll("<>", "\\$ne").replaceAll("!=", "\\$ne").
-                replaceAll("=", ":") : null;
+        return replace != null ? replace.replaceAll("\\b(?:>)\\b", "':{\\$gt:").replaceAll("\\b(?:<)\\b", "':{\\$lt:").replaceAll("\\b(?:<=)\\b", "':{\\$lte:").
+                replaceAll("\\b(?:>=)\\b", "':{\\$gte:").replaceAll("<>", "':{\\$ne:").replaceAll("\\b(?:=)", "':{\\$eq:") : null;
     }
 }

@@ -27,12 +27,12 @@ public class SqlParserImpl implements SqlParser {
 
     @Override
     public Map<String, String> parseSql(String sqlQuery) {
-        this.sqlQuery = sqlQuery.replaceAll("\\[asc\\]", ":1").replaceAll("\\[desc\\]", ":-1");
+        this.sqlQuery = sqlQuery.replaceAll("\\[asc\\]", "':1").replaceAll("\\[desc\\]", "':-1");
         List<String> words = Arrays.asList(SELECT.getValue(), FROM.getValue(), WHERE.getValue(), ORDER_BY.getValue(), SKIP.getValue(), LIMIT.getValue());
         return findValues(words.stream().filter(this::regExpForWords).collect(Collectors.toList()));
     }
 
-    private boolean regExpForWords(String word) {
+    public boolean regExpForWords(String word) {
         Pattern pattern = Pattern.compile("\\b(?:" + word + ")\\b");
         Matcher matcher = pattern.matcher(sqlQuery);
         return matcher.find();

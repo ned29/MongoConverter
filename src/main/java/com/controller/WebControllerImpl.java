@@ -2,29 +2,23 @@ package com.controller;
 
 import com.converter.ConvertToMongoQuery;
 import com.model.Query;
-import com.model.Sql;
 import com.mongoHandler.MongoDBHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class WebControllerImpl implements WebController {
 
     private static String insertCollectionResult = "";
-    private List<String> result = new ArrayList<>();
+    private static String result = "";
+
     @Autowired
     private ConvertToMongoQuery converter;
 
     @Autowired
     private MongoDBHandler handler;
-
-    @Autowired
-    private Sql sql;
 
     @Override
     public String showIndex(Model model) {
@@ -36,7 +30,10 @@ public class WebControllerImpl implements WebController {
     @Override
     public String convertToMongoQuery(@ModelAttribute(value = "query") Query sqlQuery) {
         if (sqlQuery.getSqlQuery() != null) {
-            result = handler.find(sql.getFrom(), converter.processingSql(sqlQuery.getSqlQuery().toLowerCase()));
+            result = converter.processingSql(sqlQuery.getSqlQuery().toLowerCase());
+            if (result.equals("[]")) {
+                result = "Not Found";
+            }
         }
         return "redirect:/";
     }

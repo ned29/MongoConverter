@@ -54,17 +54,23 @@ public class MongoDBHandlerImpl implements MongoDBHandler {
     }
 
     @Override
-    public List<String> find(String collectionName, String condition) {
+    public String find(String collectionName, String condition, BasicDBObject select, String sort, int limit, int skip) {
         List<String> result = new ArrayList<>();
         try {
             MongoCollection<Document> collection = getMongoCollection(collectionName);
             if (collection != null) {
-                collection.find(BasicDBObject.parse(condition)).forEach((Block<Document>) document -> result.add(JSON.serialize(document)));
+                if (sort != null && !sort.equals("")) {
+                    collection.find(BasicDBObject.parse(condition.replaceAll("\\s+", ""))).projection(select).limit(limit).sort(BasicDBObject.parse(sort)).skip(skip)
+                            .forEach((Block<Document>) document -> result.add(JSON.serialize(document)));
+                } else {
+                    collection.find(BasicDBObject.parse(condition.replaceAll("\\s+", ""))).projection(select).limit(limit).skip(skip)
+                            .forEach((Block<Document>) document -> result.add(JSON.serialize(document)));
+                }
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return result;
+        return result.toString();
     }
 
     private MongoCollection<Document> getMongoCollection(String collectionName) {

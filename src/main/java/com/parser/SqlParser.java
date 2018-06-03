@@ -13,4 +13,11 @@ public interface SqlParser {
      * @return values for selectors
      */
     Map<String, String> parseSql(String sqlQuery);
+
+    /**
+     * Finding special word in string
+     * @param word word which we are finding
+     * @return result of finding
+     */
+    boolean regExpForWords(String word);
 }
