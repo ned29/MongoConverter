@@ -8,6 +8,7 @@ import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.util.JSON;
+import lombok.Setter;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import java.util.List;
 public class MongoDBHandlerImpl implements MongoDBHandler {
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(MongoDBHandlerImpl.class);
 
+    @Setter
     private MongoClient mongoClient;
 
     @Value("${spring.data.mongodb.host}")
@@ -54,23 +56,23 @@ public class MongoDBHandlerImpl implements MongoDBHandler {
     }
 
     @Override
-    public String find(String collectionName, String condition, BasicDBObject select, String sort, int limit, int skip) {
+    public List<String> find(String collectionName, String condition, BasicDBObject select, String sort, int limit, int skip) {
         List<String> result = new ArrayList<>();
         try {
             MongoCollection<Document> collection = getMongoCollection(collectionName);
             if (collection != null) {
                 if (sort != null && !sort.equals("")) {
-                    collection.find(BasicDBObject.parse(condition.replaceAll("\\s+", ""))).projection(select).limit(limit).sort(BasicDBObject.parse(sort)).skip(skip)
+                    collection.find(BasicDBObject.parse(condition)).projection(select).limit(limit).sort(BasicDBObject.parse(sort)).skip(skip)
                             .forEach((Block<Document>) document -> result.add(JSON.serialize(document)));
                 } else {
-                    collection.find(BasicDBObject.parse(condition.replaceAll("\\s+", ""))).projection(select).limit(limit).skip(skip)
+                    collection.find(BasicDBObject.parse(condition)).projection(select).limit(limit).skip(skip)
                             .forEach((Block<Document>) document -> result.add(JSON.serialize(document)));
                 }
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return result.toString();
+        return result;
     }
 
     private MongoCollection<Document> getMongoCollection(String collectionName) {

@@ -3,6 +3,8 @@ package com.mongoHandler;
 import com.mongodb.BasicDBObject;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public interface MongoDBHandler {
 
@@ -20,7 +22,7 @@ public interface MongoDBHandler {
      *
      * @param collectionName db collection name
      * @param condition      string json
-     * @return searched elements
+     * @return list of searched elements
      */
-    String find(String collectionName, String condition, BasicDBObject select, String sort, int limit, int skip);
+    List<String> find(String collectionName, String condition, BasicDBObject select, String sort, int limit, int skip);
 }

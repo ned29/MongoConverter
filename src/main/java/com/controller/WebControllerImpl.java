@@ -30,9 +30,13 @@ public class WebControllerImpl implements WebController {
     @Override
     public String convertToMongoQuery(@ModelAttribute(value = "query") Query sqlQuery) {
         if (sqlQuery.getSqlQuery() != null) {
-            result = converter.processingSql(sqlQuery.getSqlQuery().toLowerCase());
-            if (result.equals("[]")) {
-                result = "Not Found";
+            try {
+                result = converter.processingSql(sqlQuery.getSqlQuery()).toString();
+                if (result.equals("[]")) {
+                    result = "Not Found";
+                }
+            } catch (Exception e) {
+                result = "ERROR" + e.getMessage();
             }
         }
         return "redirect:/";
@@ -47,12 +51,16 @@ public class WebControllerImpl implements WebController {
 
     @Override
     public String insertCollections(@ModelAttribute(value = "collections") Query collection) {
-        if (collection.getCollectionName() != null && collection.getCollection() != null) {
-            if (handler.insertDocument(collection.getCollectionName(), collection.getCollection())) {
-                insertCollectionResult = "Added";
+        try {
+            if (collection.getCollectionName() != null && collection.getCollection() != null) {
+                if (handler.insertDocument(collection.getCollectionName(), collection.getCollection())) {
+                    insertCollectionResult = "Added";
+                }
+            } else {
+                insertCollectionResult = "Failed";
             }
-        } else {
-            insertCollectionResult = "Failed";
+        } catch (Exception e) {
+            insertCollectionResult = "Failed" + e.getMessage();
         }
         return "redirect:/add";
     }

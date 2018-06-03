@@ -13,16 +13,22 @@ import org.springframework.stereotype.Component;
 @ToString
 @EqualsAndHashCode
 public class Sql {
+
+    @JsonProperty("SELECT")
     private String select;
 
+    @JsonProperty("FROM")
     private String from;
 
+    @JsonProperty("WHERE")
     private String where;
 
-    @JsonProperty("order by")
+    @JsonProperty("ORDER BY")
     private String orderBy;
 
+    @JsonProperty("SKIP")
     private String skip;
 
+    @JsonProperty("LIMIT")
     private String limit;
 }

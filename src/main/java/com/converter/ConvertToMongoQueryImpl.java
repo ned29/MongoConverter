@@ -14,8 +14,8 @@ import java.util.stream.IntStream;
 
 @Component
 public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
-    private static final String AND = "and";
-    private static final String OR = "or";
+    private static final String AND = "AND";
+    private static final String OR = "OR";
     private Sql sql;
 
     @Autowired
@@ -25,7 +25,7 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
     private MongoDBHandler mongoDBHandler;
 
     @Override
-    public String processingSql(String query) {
+    public List<String> processingSql(String query) {
         sql = new ObjectMapper().convertValue(sqlParser.parseSql(query), Sql.class);
         return mongoDBHandler.find(sql.getFrom(), processWhere(), processSelect(), processOrderBy(), processLimit(), processSkip());
     }
@@ -40,7 +40,7 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
 
     private String processOrderBy() {
         if (sql.getOrderBy() != null) {
-            String[] sort = sql.getOrderBy().split(",");
+            String[] sort = sql.getOrderBy().trim().split(",");
             IntStream.range(0, sort.length).forEach(i -> sort[i] = "'" + sort[i]);
             return "{" + String.join(",", sort) + "}";
         }
@@ -49,11 +49,11 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
 
     private BasicDBObject processSelect() {
         BasicDBObject result = new BasicDBObject();
-        if (sql.getSelect().equals("*") && sql.getSelect() == null) {
+        if (sql.getSelect().equals("*") && sql.getSelect() != null) {
             return new BasicDBObject();
         } else {
             result.put("_id", 0);
-            String[] selectedFields = sql.getSelect().split(",");
+            String[] selectedFields = sql.getSelect().trim().split(",");
             for (String selectedField : selectedFields) {
                 if (selectedField.equals("id")) {
                     result.remove("_id");
@@ -76,7 +76,7 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
             }
             if (!logicalOperator.equals("")) {
                 String[] where = sql.getWhere().split(logicalOperator);
-                IntStream.range(0, where.length).forEach(i -> where[i] = "{'" + replacementForWhere(where[i]) + "}}");
+                IntStream.range(0, where.length).forEach(i -> where[i] = "{'" + replacementForWhere(where[i]).trim() + "}}");
                 String result = String.join(",", where);
                 if (logicalOperator.equals(AND)) {
                     return "{$and:[" + result + "]}";
@@ -87,7 +87,7 @@ public class ConvertToMongoQueryImpl implements ConvertToMongoQuery {
                 return "{" + replacementForWhere(sql.getWhere()) + "}";
             }
         }
-        return "";
+        return "{}";
     }
 
     private String replacementForWhere(String replace) {

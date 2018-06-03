@@ -1,0 +1,20 @@
+{
+  "name": {
+    "first": "Grace",
+    "last": "Hopper"
+  },
+  "title": "Rear Admiral",
+  "contribs": [
+    "UNIVAC",
+    "compiler",
+    "FLOW-MATIC",
+    "COBOL"
+  ],
+  "awards": [
+    {
+      "award": "Computer Sciences Man of the Year",
+      "year": 1969,
+      "by": "Data Processing Management Association"
+    }
+  ]
+}

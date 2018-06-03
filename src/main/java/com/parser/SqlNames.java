@@ -3,12 +3,12 @@ package com.parser;
 import lombok.Getter;
 
 public enum SqlNames {
-    SELECT("select"),
-    FROM("from"),
-    WHERE("where"),
-    ORDER_BY("order by"),
-    SKIP("skip"),
-    LIMIT("limit");
+    SELECT("SELECT"),
+    FROM("FROM"),
+    WHERE("WHERE"),
+    ORDER_BY("ORDER BY"),
+    SKIP("SKIP"),
+    LIMIT("LIMIT");
 
     @Getter
     private final String value;
