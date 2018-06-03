@@ -22,6 +22,7 @@ Results shows up in result area.<br />
 For adding documents you can also use "/add" endpoint, you need to set collection name and set document but only `ONE`.<br />
 
 **Results**
+
 Document example
 ```
 {
@@ -57,11 +58,3 @@ Program result<br />
 ```
 [{ "name" : { "first" : "John"}}, { "name" : { "first" : "John"}}]
 ```
-
-**Travis results**<br />
-
-master ADD: integration test<br />
-Commit d570944<br />
-Compare db785c4..d570944<br />
-Branch master<br />
-ned29 authored and committed<br />
