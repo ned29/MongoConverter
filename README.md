@@ -22,7 +22,28 @@ Results shows up in result area.<br />
 For adding documents you can also use "/add" endpoint, you need to set collection name and set document but only `ONE`.<br />
 
 **Results**
-
+Document example
+```
+{
+  "name": {
+    "first": "John",
+    "last": "Backus"
+  },
+  "contribs": [
+    "Fortran",
+    "ALGOL",
+    "Backus-Naur Form",
+    "FP"
+  ],
+  "awards": [
+    {
+      "award": "W.W. McDowell Award",
+      "year": 1967,
+      "by": "IEEE Computer Society"
+    }
+  ]
+}
+```
 Sql query<br />
 ```
 SELECT [name.first] [FROM test] [WHERE awards.award="W.W. McDowell Award" OR awards.award="Turing Award"] [ORDER BY name [ASC]] [SKIP 2]
