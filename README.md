@@ -23,7 +23,7 @@ For adding documents you can also use "/add" endpoint, you need to set collectio
 
 **Results**
 
-Document example
+***Document example***
 ```
 {
   "name": {
@@ -45,16 +45,27 @@ Document example
   ]
 }
 ```
-Sql query<br />
+***Sql query***<br />
 ```
 SELECT [name.first] [FROM test] [WHERE awards.award="W.W. McDowell Award" OR awards.award="Turing Award"] [ORDER BY name [ASC]] [SKIP 2]
 [LIMIT 2]
 ```
-Mongo query<br />
+WHERE in sql query support only one ligical operator<br/>
+
+***Mongo query***<br />
 ```
 {$or:[{'awards.award':{$eq:"W.W. McDowell Award"}},{'awards.award':{$eq:"Turing Award"}}]},{'name ':1}
 ```
-Program result<br />
+***Program result***<br />
 ```
 [{ "name" : { "first" : "John"}}, { "name" : { "first" : "John"}}]
 ```
+
+**Travis**
+
+https://travis-ci.org/ned29/MongoConverter/builds
+
+**Docker**
+
+For docker pull use: docker pull ned29/converter<br/>
+https://hub.docker.com/r/ned29/converter/
